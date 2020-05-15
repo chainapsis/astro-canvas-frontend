@@ -1,0 +1,6 @@
+**/*.scss
+**/*.html
+**/*.json
+**/*.png
+**/*.svg
+.DS_Store
