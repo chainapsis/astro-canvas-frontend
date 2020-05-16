@@ -1,4 +1,26 @@
 export class CanvasUtils {
+  static clear(
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number,
+    scale: number
+  ) {
+    ctx.clearRect(0, 0, width * scale, height * scale);
+  }
+
+  static drawRect(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    scale: number,
+    fill: string
+  ) {
+    ctx.fillStyle = fill;
+    ctx.fillRect(x * scale, y * scale, width * scale, height * scale);
+  }
+
   static drawOutlinedRect(
     ctx: CanvasRenderingContext2D,
     x: number,
