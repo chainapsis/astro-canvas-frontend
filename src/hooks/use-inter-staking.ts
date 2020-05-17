@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useFetch } from "./use-fetch";
-import { AccAddress } from "@everett-protocol/cosmosjs/common/address";
 
 const Buffer = require("buffer/").Buffer;
 
@@ -16,7 +15,7 @@ export const useInterstaking = (
   baseUrl: string,
   sourcePort?: string,
   sourceChannel?: string,
-  address: string
+  address?: string
 ) => {
   const [url, setUrl] = useState("");
 
