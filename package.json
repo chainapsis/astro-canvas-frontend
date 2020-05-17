@@ -49,18 +49,19 @@
     "write-file-webpack-plugin": "^4.5.1"
   },
   "dependencies": {
-    "@everett-protocol/cosmosjs": "git+https://github.com/everett-protocol/cosmosjs-dist.git#5b212c7",
-    "big-integer": "^1.6.43",
-    "@node-a-team/ts-amino": "0.0.1-alpha.2",
-    "webextension-polyfill": "^0.6.0",
+    "@everett-protocol/cosmosjs": "git+https://github.com/everett-protocol/cosmosjs-dist.git#f93187c",
     "@fortawesome/fontawesome-free": "^5.13.0",
+    "@node-a-team/ts-amino": "0.0.1-alpha.2",
     "argon-dashboard-react": "^1.1.0",
     "axios": "^0.19.2",
+    "big-integer": "^1.6.43",
     "classnames": "^2.2.6",
     "react": "^16.13.0",
     "react-color": "^2.18.1",
     "react-dom": "^16.13.0",
+    "react-hook-form": "^5.7.2",
     "react-responsive-pinch-zoom-pan": "^0.3.0",
-    "reactstrap": "^8.4.1"
+    "reactstrap": "^8.4.1",
+    "webextension-polyfill": "^0.6.0"
   }
 }

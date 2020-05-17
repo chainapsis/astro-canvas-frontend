@@ -9,7 +9,7 @@ import React, {
 
 import { GithubPicker } from "react-color";
 import { CanvasUtils } from "./utils";
-import { Color, Point, DenomToColor, AstroHubInfo } from "./constants";
+import { Color, Point, DenomToColor, AstroZoneInfo } from "./constants";
 import { Button } from "reactstrap";
 import { useCosmosJS } from "../../hooks/use-cosmosjs";
 import { useWalletProvider } from "../../hooks/use-wallet-provider";
@@ -72,12 +72,9 @@ export const Canvas: FunctionComponent<{
 
   const [pointsToFill, setPointsToFill] = useState<Point[]>([]);
 
-  const [colorToFill, setColorToFill] = useState<Color>({
-    denom: "uastro",
-    color: DenomToColor["uastro"]
-  });
+  const [colorToFill, setColorToFill] = useState<Color | undefined>(undefined);
 
-  const cosmosJS = useCosmosJS(AstroHubInfo, useWalletProvider(), {
+  const cosmosJS = useCosmosJS(AstroZoneInfo, useWalletProvider(), {
     useBackgroundTx: true
   });
 
@@ -131,7 +128,7 @@ export const Canvas: FunctionComponent<{
           );
         }
 
-        if (mousePosition.x >= 0 && mousePosition.y >= 0) {
+        if (colorToFill && mousePosition.x >= 0 && mousePosition.y >= 0) {
           CanvasUtils.drawOutlinedRect(
             ctx,
             mousePosition.x,
@@ -165,7 +162,7 @@ export const Canvas: FunctionComponent<{
   );
 
   const onClick = useCallback(() => {
-    if (mousePosition.x >= 0 && mousePosition.y >= 0) {
+    if (colorToFill && mousePosition.x >= 0 && mousePosition.y >= 0) {
       const _pointsToFill = pointsToFill.slice();
       _pointsToFill.push({
         x: mousePosition.x,
@@ -217,7 +214,7 @@ export const Canvas: FunctionComponent<{
           "genesis",
           point.x,
           point.y,
-          new Coin("uastro", 1000000),
+          new Coin(point.color, 1000000),
           AccAddress.fromBech32(cosmosJS.addresses[0])
         );
 
@@ -225,7 +222,7 @@ export const Canvas: FunctionComponent<{
       }
 
       if (msgs.length > 0) {
-        const gas = 50000 + msgs.length * 25000;
+        const gas = 50000 + msgs.length * 30000;
         cosmosJS.sendMsgs(msgs, {
           gas: gas,
           memo: "",

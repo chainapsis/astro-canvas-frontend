@@ -25,6 +25,7 @@ import { BACKGROUND_PORT } from "../common/message/constant";
 import { AsyncWaitGroup } from "../common/async-wait-group";
 
 import * as Canvas from "../x/canvas";
+import * as InterStaking from "../x/inter-staking";
 import { BIP44 } from "@everett-protocol/cosmosjs/core/bip44";
 
 const Buffer = require("buffer/").Buffer;
@@ -88,6 +89,7 @@ export const useCosmosJS = <R extends Rest = Rest>(
         Slashing.registerCodec(codec);
         Gov.registerCodec(codec);
         Canvas.registerCodec(codec);
+        InterStaking.registerCodec(codec);
       }),
     [opts?.registerCodec]
   );
