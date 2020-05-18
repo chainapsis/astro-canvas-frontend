@@ -291,9 +291,17 @@ export const InfoView: FunctionComponent = () => {
       </h1>
       <ColorBalance balances={zoneBalances} />
       {zoneInterstaking.registered.length === 0 ? (
-        <Button onClick={register} data-loading={zoneCosmosJS.loading}>
-          Register
-        </Button>
+        <React.Fragment>
+          <h1 className="mt-3">Delegate to Get Color Tokens</h1>
+          <Button
+            onClick={register}
+            data-loading={zoneCosmosJS.loading}
+            color="primary"
+          >
+            Register
+          </Button>
+          <div className="mt-2">Click the register button to get started</div>
+        </React.Fragment>
       ) : (
         <React.Fragment>
           <h1 className="mt-3">Delegate to Get Color Tokens</h1>
