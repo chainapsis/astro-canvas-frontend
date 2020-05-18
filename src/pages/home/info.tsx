@@ -42,6 +42,7 @@ import InputGroup from "reactstrap/lib/InputGroup";
 import { ToastContainer, toast } from "react-toastify";
 
 import style from "./info.module.scss";
+import { useInterval } from "../../hooks/use-interval";
 
 const Buffer = require("buffer/").Buffer;
 
@@ -205,6 +206,9 @@ export const InfoView: FunctionComponent = () => {
   useEffect(() => {
     refreshBalances();
   }, [refreshBalances]);
+
+  // Refresh balances per 10sec
+  useInterval(refreshBalances, 10000);
 
   const register = useCallback(() => {
     if (zoneCosmosJS.addresses.length > 0 && zoneCosmosJS.sendMsgs) {
