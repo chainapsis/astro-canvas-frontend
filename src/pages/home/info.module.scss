@@ -3,8 +3,27 @@
   align-content: center;
 
   p {
-    margin-left: 0.5rem;
+    margin-left: 1rem;
     margin-bottom: 0;
+  }
+}
+
+.color-validator {
+  display: flex;
+  align-items: center;
+
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  .inner-container {
+    display: flex;
+    flex-direction: column;
+
+    margin-left: 1rem;
+
+    p {
+      line-height: 1;
+    }
   }
 }
 
@@ -12,4 +31,10 @@
   width: 20px;
   height: 20px;
   border-radius: 10px;
+
+  &.border {
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+  }
 }

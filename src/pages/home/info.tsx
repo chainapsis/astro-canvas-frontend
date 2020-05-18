@@ -43,6 +43,7 @@ import { ToastContainer, toast } from "react-toastify";
 
 import style from "./info.module.scss";
 import { useInterval } from "../../hooks/use-interval";
+import classnames from "classnames";
 
 const Buffer = require("buffer/").Buffer;
 
@@ -290,8 +291,8 @@ export const InfoView: FunctionComponent = () => {
         </Button>
       ) : (
         <React.Fragment>
-          <h1>Delegate to Get Color Tokens</h1>
-          <p>{`Available balance to delegate: ${
+          <h1 className="mt-3">Delegate to Get Color Tokens</h1>
+          <div className="py-2 mb-2">{`Available balance to delegate: ${
             availableBalanceToDelegate
               ? DecUtils.decToStrWithoutTrailingZeros(
                   new Dec(availableBalanceToDelegate.amount).quoTruncate(
@@ -301,7 +302,7 @@ export const InfoView: FunctionComponent = () => {
                   )
                 )
               : "?"
-          } ${AstroHubInfo.nativeCurrency.coinDenom}`}</p>
+          } ${AstroHubInfo.nativeCurrency.coinDenom}`}</div>
           <ColorValidators
             validators={hubValidators.validators}
             delegateFn={openDelegateModal}
@@ -383,7 +384,9 @@ export const ColorRect: FunctionComponent<{
 }> = ({ fill }) => {
   return (
     <div
-      className={style.colorRect}
+      className={classnames(style.colorRect, {
+        border: fill.toLowerCase() === "#ffffff"
+      })}
       style={{
         backgroundColor: fill
       }}
@@ -407,9 +410,17 @@ export const ColorValidators: FunctionComponent<{
     .filter(val => {
       return Object.keys(DenomToColor).includes(getValidatorDenom(val));
     })
-    .sort((v1, v2) =>
-      v1.description.moniker.localeCompare(v2.description.moniker)
-    );
+    .sort((v1, v2) => {
+      if (v1.description.moniker.length < v2.description.moniker.length) {
+        return -1;
+      } else if (
+        v1.description.moniker.length > v2.description.moniker.length
+      ) {
+        return 1;
+      } else {
+        return v1.description.moniker.localeCompare(v2.description.moniker);
+      }
+    });
 
   const delegate = useCallback(
     (e: MouseEvent) => {
@@ -421,68 +432,53 @@ export const ColorValidators: FunctionComponent<{
     [props.delegateFn]
   );
 
+  const renderValidators = (validators: Validator[]) => {
+    return validators.map(val => {
+      const denom = getValidatorDenom(val);
+
+      return (
+        <div className={style.colorValidator} key={denom}>
+          <ColorRect fill={DenomToColor[denom]} />
+          <div className={style.innerContainer}>
+            <div>{val.description.moniker}</div>
+            <p className="mb-0">
+              Voting Power:
+              {new Dec(val.tokens)
+                .quoTruncate(
+                  DecUtils.getPrecisionDec(
+                    AstroHubInfo.nativeCurrency.coinDecimals
+                  )
+                )
+                .truncate()
+                .toString()}
+            </p>
+          </div>
+          <div style={{ flex: 1 }} />
+          <Button
+            size="sm"
+            color="primary"
+            data-validator={val.operator_address}
+            onClick={delegate}
+          >
+            Delegate
+          </Button>
+        </div>
+      );
+    });
+  };
+
   return (
     <Container fluid>
       <Row>
         <Col size={6}>
-          {validators.slice(0, Math.floor(validators.length / 2)).map(val => {
-            const denom = getValidatorDenom(val);
-
-            return (
-              <div className={style.colorBalance} key={denom}>
-                <ColorRect fill={DenomToColor[denom]} />
-                <p>{val.description.moniker}</p>
-                <p>
-                  {new Dec(val.tokens)
-                    .quoTruncate(
-                      DecUtils.getPrecisionDec(
-                        AstroHubInfo.nativeCurrency.coinDecimals
-                      )
-                    )
-                    .truncate()
-                    .toString()}
-                </p>
-                <Button
-                  size="sm"
-                  color="primary"
-                  data-validator={val.operator_address}
-                  onClick={delegate}
-                >
-                  Delegate
-                </Button>
-              </div>
-            );
-          })}
+          {renderValidators(
+            validators.slice(0, Math.floor(validators.length / 2))
+          )}
         </Col>
         <Col size={6}>
-          {validators.slice(Math.floor(validators.length / 2)).map(val => {
-            const denom = getValidatorDenom(val);
-
-            return (
-              <div className={style.colorBalance} key={denom}>
-                <ColorRect fill={DenomToColor[denom]} />
-                <p>{val.description.moniker}</p>
-                <p>
-                  {new Dec(val.tokens)
-                    .quoTruncate(
-                      DecUtils.getPrecisionDec(
-                        AstroHubInfo.nativeCurrency.coinDecimals
-                      )
-                    )
-                    .truncate()
-                    .toString()}
-                </p>
-                <Button
-                  size="sm"
-                  color="primary"
-                  data-validator={val.operator_address}
-                  onClick={delegate}
-                >
-                  Delegate
-                </Button>
-              </div>
-            );
-          })}
+          {renderValidators(
+            validators.slice(Math.floor(validators.length / 2))
+          )}
         </Col>
       </Row>
     </Container>
