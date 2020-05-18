@@ -2,8 +2,8 @@ import { ChainInfo } from "../../chain-info";
 import { defaultBech32Config } from "@everett-protocol/cosmosjs/core/bech32Config";
 
 export const AstroHubInfo: ChainInfo = {
-  rpc: "http://34.94.36.216:80/rpc",
-  rest: "http://34.94.36.216:80/rest",
+  rpc: "https://node-astrohub-1.keplr.app/rpc",
+  rest: "https://node-astrohub-1.keplr.app/rest",
   chainId: "astrohub-1",
   chainName: "Astro Hub",
   nativeCurrency: {
@@ -15,8 +15,8 @@ export const AstroHubInfo: ChainInfo = {
 };
 
 export const AstroZoneInfo: ChainInfo = {
-  rpc: "http://35.235.73.59:80/rpc",
-  rest: "http://35.235.73.59:80/rest",
+  rpc: "https://node-astrocanvas-1.keplr.app/rpc",
+  rest: "https://node-astrocanvas-1.keplr.app/rest",
   chainId: "astrocanvas-1",
   chainName: "Astro Zone",
   nativeCurrency: {
