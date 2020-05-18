@@ -39,6 +39,8 @@ import { DecUtils } from "../../common/dec-utils";
 import { useForm } from "react-hook-form";
 import InputGroup from "reactstrap/lib/InputGroup";
 
+import { ToastContainer, toast } from "react-toastify";
+
 import style from "./info.module.scss";
 
 const Buffer = require("buffer/").Buffer;
@@ -48,9 +50,7 @@ export const DelegateModal: FunctionComponent<{
   balance?: Coin;
   closeModal: () => void;
 }> = ({ validator, balance, closeModal }) => {
-  const cosmosJS = useCosmosJS(AstroZoneInfo, useWalletProvider(), {
-    useBackgroundTx: true
-  });
+  const cosmosJS = useCosmosJS(AstroZoneInfo, useWalletProvider());
 
   const form = useForm<{
     amount: string;
@@ -97,7 +97,13 @@ export const DelegateModal: FunctionComponent<{
                 memo: "",
                 fee: new Coin(AstroZoneInfo.nativeCurrency.coinMinimalDenom, 1)
               },
-              closeModal
+              () => {
+                toast.success("Success!");
+                closeModal();
+              },
+              e => {
+                toast.error(`Failed to send tx: ${e.message}`);
+              }
             );
           }
         })}
@@ -142,14 +148,13 @@ export const DelegateModal: FunctionComponent<{
           Delegate
         </Button>
       </Form>
+      <ToastContainer hideProgressBar={false} draggable />
     </div>
   );
 };
 
 export const InfoView: FunctionComponent = () => {
-  const zoneCosmosJS = useCosmosJS(AstroZoneInfo, useWalletProvider(), {
-    useBackgroundTx: true
-  });
+  const zoneCosmosJS = useCosmosJS(AstroZoneInfo, useWalletProvider());
   const zoneInterstaking = useInterstaking(
     AstroZoneInfo.rest,
     ZoneToHub.interchainAccount.portId,
@@ -190,11 +195,23 @@ export const InfoView: FunctionComponent = () => {
         AccAddress.fromBech32(zoneCosmosJS.addresses[0])
       );
 
-      zoneCosmosJS.sendMsgs([msg], {
-        gas: 200000,
-        memo: "",
-        fee: [new Coin(AstroZoneInfo.nativeCurrency.coinMinimalDenom, 1)]
-      });
+      zoneCosmosJS.sendMsgs(
+        [msg],
+        {
+          gas: 200000,
+          memo: "",
+          fee: [new Coin(AstroZoneInfo.nativeCurrency.coinMinimalDenom, 1)]
+        },
+        () => {
+          toast.success("Success!");
+          if (zoneInterstaking.refresh) {
+            zoneInterstaking.refresh();
+          }
+        },
+        e => {
+          toast.error(`Failed to send tx: ${e.message}`);
+        }
+      );
     }
   }, [zoneCosmosJS.addresses, zoneCosmosJS.sendMsgs]);
 
@@ -249,6 +266,7 @@ export const InfoView: FunctionComponent = () => {
         validators={hubValidators.validators}
         delegateFn={openDelegateModal}
       />
+      <ToastContainer hideProgressBar={false} draggable />
     </div>
   );
 };

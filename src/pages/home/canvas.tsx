@@ -18,6 +18,8 @@ import { AccAddress } from "@everett-protocol/cosmosjs/common/address";
 import { Coin } from "@everett-protocol/cosmosjs/common/coin";
 import { useCanvasPoints } from "../../hooks/use-canvas-points";
 
+import { ToastContainer, toast } from "react-toastify";
+
 // Doesn't have a definition.
 const PinchZoomPan = require("react-responsive-pinch-zoom-pan").default;
 
@@ -74,9 +76,7 @@ export const Canvas: FunctionComponent<{
 
   const [colorToFill, setColorToFill] = useState<Color | undefined>(undefined);
 
-  const cosmosJS = useCosmosJS(AstroZoneInfo, useWalletProvider(), {
-    useBackgroundTx: true
-  });
+  const cosmosJS = useCosmosJS(AstroZoneInfo, useWalletProvider());
 
   const backLayer = useRef<HTMLCanvasElement>(null);
   const frontLayer = useRef<HTMLCanvasElement>(null);
@@ -223,11 +223,30 @@ export const Canvas: FunctionComponent<{
 
       if (msgs.length > 0) {
         const gas = 50000 + msgs.length * 30000;
-        cosmosJS.sendMsgs(msgs, {
-          gas: gas,
-          memo: "",
-          fee: new Coin("uastro", gas * 0.025)
-        });
+        cosmosJS.sendMsgs(
+          msgs,
+          {
+            gas: gas,
+            memo: "",
+            fee: new Coin("uastro", gas * 0.025)
+          },
+          () => {
+            toast.success("Success!");
+            if (canvasPoints.refresh) {
+              const promise = canvasPoints.refresh();
+              if (promise) {
+                promise.then(() => {
+                  setPointsToFill([]);
+                });
+              }
+            } else {
+              setPointsToFill([]);
+            }
+          },
+          e => {
+            toast.error(`Failed to send tx: ${e.message}`);
+          }
+        );
       }
     }
   }, [cosmosJS, pointsToFill]);
@@ -279,6 +298,7 @@ export const Canvas: FunctionComponent<{
       <div style={{ position: "absolute", right: 0 }}>
         <CanvasTools onColorChange={setColorToFill} onPaint={onPaint} />
       </div>
+      <ToastContainer hideProgressBar={false} draggable />
     </div>
   );
 };
