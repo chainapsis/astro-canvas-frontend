@@ -284,23 +284,26 @@ export const InfoView: FunctionComponent = () => {
         <Button onClick={register} data-loading={zoneCosmosJS.loading}>
           Register
         </Button>
-      ) : null}
-      <h1>Delegate to get Colors</h1>
-      <p>{`Available balance to delegate: ${
-        availableBalanceToDelegate
-          ? DecUtils.decToStrWithoutTrailingZeros(
-              new Dec(availableBalanceToDelegate.amount).quoTruncate(
-                DecUtils.getPrecisionDec(
-                  AstroHubInfo.nativeCurrency.coinDecimals
+      ) : (
+        <React.Fragment>
+          <h1>Delegate to get Colors</h1>
+          <p>{`Available balance to delegate: ${
+            availableBalanceToDelegate
+              ? DecUtils.decToStrWithoutTrailingZeros(
+                  new Dec(availableBalanceToDelegate.amount).quoTruncate(
+                    DecUtils.getPrecisionDec(
+                      AstroHubInfo.nativeCurrency.coinDecimals
+                    )
+                  )
                 )
-              )
-            )
-          : "?"
-      } ${AstroHubInfo.nativeCurrency.coinDenom}`}</p>
-      <ColorValidators
-        validators={hubValidators.validators}
-        delegateFn={openDelegateModal}
-      />
+              : "?"
+          } ${AstroHubInfo.nativeCurrency.coinDenom}`}</p>
+          <ColorValidators
+            validators={hubValidators.validators}
+            delegateFn={openDelegateModal}
+          />
+        </React.Fragment>
+      )}
       <ToastContainer hideProgressBar={false} draggable />
     </div>
   );
