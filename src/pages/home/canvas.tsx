@@ -165,7 +165,21 @@ export const Canvas: FunctionComponent<{
 
   const onClick = useCallback(() => {
     if (colorToFill && mousePosition.x >= 0 && mousePosition.y >= 0) {
-      const _pointsToFill = pointsToFill.slice();
+      const prevPointIndex = pointsToFill.findIndex(
+        p => p.x === mousePosition.x && p.y === mousePosition.y
+      );
+      const prevPoint =
+        prevPointIndex > -1 ? pointsToFill[prevPointIndex] : undefined;
+      if (prevPoint && prevPoint.color === colorToFill.denom) {
+        return;
+      }
+
+      let _pointsToFill = pointsToFill.slice();
+      if (prevPointIndex > -1) {
+        _pointsToFill = _pointsToFill
+          .slice(0, prevPointIndex)
+          .concat(_pointsToFill.slice(prevPointIndex + 1));
+      }
       _pointsToFill.push({
         x: mousePosition.x,
         y: mousePosition.y,
