@@ -164,7 +164,6 @@ export const DelegateModal: FunctionComponent<{
           Delegate
         </Button>
       </Form>
-      <ToastContainer hideProgressBar={false} draggable />
     </div>
   );
 };
@@ -195,13 +194,17 @@ export const InfoView: FunctionComponent = () => {
     setAvailableBalanceToDelegate(new Coin(expectedDenom, 0));
   }, [zoneBalances]);
 
-  useEffect(() => {
+  const refreshBalances = useCallback(() => {
     if (zoneCosmosJS.addresses.length > 0 && zoneCosmosJS.queryAccount) {
       zoneCosmosJS.queryAccount(zoneCosmosJS.addresses[0]).then(account => {
         setZoneBalances(account.getCoins());
       });
     }
   }, [zoneCosmosJS.addresses, zoneCosmosJS.queryAccount]);
+
+  useEffect(() => {
+    refreshBalances();
+  }, [refreshBalances]);
 
   const register = useCallback(() => {
     if (zoneCosmosJS.addresses.length > 0 && zoneCosmosJS.sendMsgs) {
@@ -250,6 +253,11 @@ export const InfoView: FunctionComponent = () => {
     setDelegateModal(undefined);
   }, []);
 
+  const closeModalAndRefreshBalances = useCallback(() => {
+    setDelegateModal(undefined);
+    refreshBalances();
+  }, [refreshBalances]);
+
   return (
     <div>
       <Modal
@@ -260,7 +268,7 @@ export const InfoView: FunctionComponent = () => {
         <DelegateModal
           validator={delegateModal!}
           balance={availableBalanceToDelegate}
-          closeModal={closeDelegateModal}
+          closeModal={closeModalAndRefreshBalances}
         />
       </Modal>
       <p>
