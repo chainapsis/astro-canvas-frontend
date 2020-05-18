@@ -283,7 +283,12 @@ export const InfoView: FunctionComponent = () => {
             : "unknown"
         }`}
       </p>
-      <h1>Your Color Balance</h1>
+      <h1>
+        Your Color Balance{" "}
+        <Button className="ml-2 mt--1" size="sm" onClick={refreshBalances}>
+          Refresh
+        </Button>
+      </h1>
       <ColorBalance balances={zoneBalances} />
       {zoneInterstaking.registered.length === 0 ? (
         <Button onClick={register} data-loading={zoneCosmosJS.loading}>
