@@ -282,7 +282,7 @@ export const InfoView: FunctionComponent = () => {
             : "unknown"
         }`}
       </p>
-      <h1>Your Colors</h1>
+      <h1>Your Color Balance</h1>
       <ColorBalance balances={zoneBalances} />
       {zoneInterstaking.registered.length === 0 ? (
         <Button onClick={register} data-loading={zoneCosmosJS.loading}>
@@ -290,7 +290,7 @@ export const InfoView: FunctionComponent = () => {
         </Button>
       ) : (
         <React.Fragment>
-          <h1>Delegate to get Colors</h1>
+          <h1>Delegate to Get Color Tokens</h1>
           <p>{`Available balance to delegate: ${
             availableBalanceToDelegate
               ? DecUtils.decToStrWithoutTrailingZeros(
