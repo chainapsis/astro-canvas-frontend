@@ -223,6 +223,10 @@ export const Canvas: FunctionComponent<{
 
       if (msgs.length > 0) {
         const gas = 50000 + msgs.length * 30000;
+
+        const toastId = toast.info("Waiting for tx to be committed", {
+          autoClose: false
+        });
         cosmosJS.sendMsgs(
           msgs,
           {
@@ -231,7 +235,11 @@ export const Canvas: FunctionComponent<{
             fee: new Coin("uastro", gas * 0.025)
           },
           () => {
-            toast.success("Success!");
+            toast.update(toastId, {
+              type: "success",
+              render: "Success!",
+              autoClose: 3000
+            });
             if (canvasPoints.refresh) {
               const promise = canvasPoints.refresh();
               if (promise) {
@@ -244,7 +252,11 @@ export const Canvas: FunctionComponent<{
             }
           },
           e => {
-            toast.error(`Failed to send tx: ${e.message}`);
+            toast.update(toastId, {
+              type: "error",
+              render: `Failed to send tx: ${e.message}`,
+              autoClose: 3000
+            });
           }
         );
       }

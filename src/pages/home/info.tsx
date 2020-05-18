@@ -90,6 +90,9 @@ export const DelegateModal: FunctionComponent<{
               )
             );
 
+            const toastId = toast.info("Waiting for tx to be committed", {
+              autoClose: false
+            });
             cosmosJS.sendMsgs(
               [msg],
               {
@@ -98,11 +101,19 @@ export const DelegateModal: FunctionComponent<{
                 fee: new Coin(AstroZoneInfo.nativeCurrency.coinMinimalDenom, 1)
               },
               () => {
-                toast.success("Success!");
+                toast.update(toastId, {
+                  type: "success",
+                  render: "Success!",
+                  autoClose: 3000
+                });
                 closeModal();
               },
               e => {
-                toast.error(`Failed to send tx: ${e.message}`);
+                toast.update(toastId, {
+                  type: "error",
+                  render: `Failed to send tx: ${e.message}`,
+                  autoClose: 3000
+                });
               }
             );
           }
@@ -144,7 +155,12 @@ export const DelegateModal: FunctionComponent<{
             ) : null}
           </InputGroup>
         </FormGroup>
-        <Button type="submit" color="primary" style={{ float: "right" }}>
+        <Button
+          type="submit"
+          color="primary"
+          style={{ float: "right" }}
+          data-loading={cosmosJS.loading}
+        >
           Delegate
         </Button>
       </Form>
@@ -195,6 +211,9 @@ export const InfoView: FunctionComponent = () => {
         AccAddress.fromBech32(zoneCosmosJS.addresses[0])
       );
 
+      const toastId = toast.info("Waiting for tx to be committed", {
+        autoClose: false
+      });
       zoneCosmosJS.sendMsgs(
         [msg],
         {
@@ -203,13 +222,21 @@ export const InfoView: FunctionComponent = () => {
           fee: [new Coin(AstroZoneInfo.nativeCurrency.coinMinimalDenom, 1)]
         },
         () => {
-          toast.success("Success!");
+          toast.update(toastId, {
+            type: "success",
+            render: "Success!",
+            autoClose: 3000
+          });
           if (zoneInterstaking.refresh) {
             zoneInterstaking.refresh();
           }
         },
         e => {
-          toast.error(`Failed to send tx: ${e.message}`);
+          toast.update(toastId, {
+            type: "error",
+            render: `Failed to send tx: ${e.message}`,
+            autoClose: 3000
+          });
         }
       );
     }
