@@ -3,6 +3,7 @@ import React, {
   MouseEvent,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState
 } from "react";
@@ -19,6 +20,7 @@ import { Coin } from "@everett-protocol/cosmosjs/common/coin";
 import { useCanvasPoints } from "../../hooks/use-canvas-points";
 
 import { ToastContainer, toast } from "react-toastify";
+import { ColorRect } from "./info";
 
 // Doesn't have a definition.
 const PinchZoomPan = require("react-responsive-pinch-zoom-pan").default;
@@ -264,53 +266,96 @@ export const Canvas: FunctionComponent<{
   }, [cosmosJS, pointsToFill]);
 
   return (
-    <div
-      style={{
-        position: "relative",
-        width: `${width}px`,
-        height: `${height}px`
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          width: `${width}px`,
-          height: `${height}px`,
-          overflow: "hidden"
-        }}
-      >
-        <PinchZoomPan initialScale={2} minScale={1} maxScale={16}>
-          <div>
-            <canvas
-              ref={backLayer}
-              style={{
-                position: "absolute",
-                zIndex: -1,
-                transformOrigin: "top left",
-                transform: `scale(${1 / scale})`
-              }}
-              width={width * scale}
-              height={height * scale}
-            />
-            <canvas
-              ref={frontLayer}
-              style={{
-                transformOrigin: "top left",
-                transform: `scale(${1 / scale})`
-              }}
-              width={width * scale}
-              height={height * scale}
-              onMouseMove={onMouseMove}
-              onMouseDown={onMouseDown}
-              onMouseUp={onMouseUp}
-            />
+    <div>
+      <div style={{ display: "flex", width: "100%" }}>
+        <div style={{ flex: 1 }} />
+        <div
+          style={{
+            position: "relative",
+            width: `${width}px`,
+            height: `${height}px`
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              width: `${width}px`,
+              height: `${height}px`,
+              overflow: "hidden"
+            }}
+          >
+            <PinchZoomPan initialScale={2} minScale={1} maxScale={16}>
+              <div>
+                <canvas
+                  ref={backLayer}
+                  style={{
+                    position: "absolute",
+                    zIndex: -1,
+                    transformOrigin: "top left",
+                    transform: `scale(${1 / scale})`
+                  }}
+                  width={width * scale}
+                  height={height * scale}
+                />
+                <canvas
+                  ref={frontLayer}
+                  style={{
+                    transformOrigin: "top left",
+                    transform: `scale(${1 / scale})`
+                  }}
+                  width={width * scale}
+                  height={height * scale}
+                  onMouseMove={onMouseMove}
+                  onMouseDown={onMouseDown}
+                  onMouseUp={onMouseUp}
+                />
+              </div>
+            </PinchZoomPan>
           </div>
-        </PinchZoomPan>
+          <div style={{ position: "absolute", right: 0 }}>
+            <CanvasTools onColorChange={setColorToFill} onPaint={onPaint} />
+          </div>
+          <ToastContainer hideProgressBar={false} draggable />
+        </div>
+        <div style={{ flex: 1 }} />
       </div>
-      <div style={{ position: "absolute", right: 0 }}>
-        <CanvasTools onColorChange={setColorToFill} onPaint={onPaint} />
-      </div>
-      <ToastContainer hideProgressBar={false} draggable />
+      <h3 className="mt-3 mb-0" style={{ width: "100%", textAlign: "center" }}>
+        Color Used
+      </h3>
+      <PointsUsed points={pointsToFill} />
+    </div>
+  );
+};
+
+export const PointsUsed: FunctionComponent<{
+  points: Point[];
+}> = ({ points }) => {
+  const numPoints = useMemo(() => {
+    const obj: { [denom: string]: number } = {};
+
+    for (const p of points) {
+      if (obj[p.color] == null) {
+        obj[p.color] = 1;
+      } else {
+        obj[p.color]++;
+      }
+    }
+
+    return obj;
+  }, [points]);
+
+  return (
+    <div className="mt-1" style={{ display: "flex" }}>
+      <div style={{ flex: 1 }} />
+      {Object.keys(numPoints).map(color => {
+        return (
+          <div style={{ display: "flex" }}>
+            <ColorRect fill={DenomToColor[color] || "#000000"} />
+            <p className="mx-1 mr-2">{numPoints[color]}</p>
+          </div>
+        );
+      })}
+      <div style={{ flex: 1 }} />
     </div>
   );
 };

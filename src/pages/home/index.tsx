@@ -11,16 +11,12 @@ export const PageHome: FunctionComponent = () => {
     <Container fluid>
       <Row>
         <Col lg="6">
-          <div style={{ display: "flex", width: "100%" }}>
-            <div style={{ flex: 1 }} />
-            <Canvas
-              canvasId={CanvasId}
-              restEndpoint={AstroZoneInfo.rest}
-              width={500}
-              height={500}
-            />
-            <div style={{ flex: 1 }} />
-          </div>
+          <Canvas
+            canvasId={CanvasId}
+            restEndpoint={AstroZoneInfo.rest}
+            width={500}
+            height={500}
+          />
         </Col>
         <Col lg="6">
           <InfoView />
