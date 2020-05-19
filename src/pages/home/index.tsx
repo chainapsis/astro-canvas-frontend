@@ -93,7 +93,7 @@ export const PageHome: FunctionComponent = () => {
         </Col>
         <Col lg="6">
           <Button
-            style={{ float: "right" }}
+            style={{ float: "right", fontSize: "1rem" }}
             color="link"
             onClick={openTutorial}
           >
