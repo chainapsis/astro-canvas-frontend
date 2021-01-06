@@ -54,7 +54,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@node-a-team/ts-amino": "0.0.1-alpha.2",
     "argon-dashboard-react": "^1.1.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "big-integer": "^1.6.43",
     "classnames": "^2.2.6",
     "react": "^16.13.0",
